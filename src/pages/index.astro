@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/Layout.astro';
+import getDataGoogleSheet from '../lib/DataGoogleSheet';
+import FecthMagicLoops from '../lib/FecthMagicLoops';
+import { type Goal, type Goals } from '../types/DataGoals';
+
+const players = ['Messi', 'Ronaldo'];
+
+let goalsInfo = [];
+let goals = [];
+let scorers: string[] = [];
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const birthday = formData.get('birthday')?.toString();
+
+  if (birthday) {
+    const [year, month, day] = birthday.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    const formattedDate = date.toLocaleDateString('es-EC');
+
+    try {
+      goals = await getDataGoogleSheet(formattedDate);
+      scorers = goals.map((goal: Goal) => goal.scorer);
+      if (goals.length >= 0) 
+      goalsInfo = await FecthMagicLoops(goals);      
+    } catch (error) {
+      console.error('Error al obtener los datos de goles:', error);
+    }
+  }
+}
+---
+
+<Layout>
+    <div class="min-h-screen bg-gradient-to-br flex flex-col items-center justify-center text-white p-6">
+        <!-- Título principal -->
+        <h1 class="text-4xl md:text-5xl font-bold text-center mb-8">
+            ¿Messi o Cristiano hicieron gol en tu cumpleaños?
+        </h1>
+
+        <!-- Formulario -->
+        <form id="dateForm" class="w-full max-w-md p-8 rounded-lg shadow-2xl" method="POST">
+            <label for="dateBirthday" class="block text-lg font-medium text-gray-300 mb-4">
+                Selecciona tu fecha de nacimiento:(No importa el año, ya que solo se tomara en cuenta el mes y el día)
+            </label>
+            <div class="flex items-center gap-4">
+                <input 
+                    type="date" 
+                    id="birthdayInput" 
+                    class="flex-1 p-3 rounded-lg bg-black text-white border border-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition duration-300"
+                    name="birthday"
+                    required
+                />
+                <button 
+                    id="checkButton" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105 active:scale-95"
+                >
+                    Verificar
+                </button>
+            </div>
+        </form>
+
+        <!-- Resultado -->
+        {scorers.length > 0 && (
+            <div id="resultData" class="mt-8 text-center">
+                <div class="flex flex-wrap justify-center gap-4">
+                    {scorers.includes(players[0]) && (
+                        <img src="/CumpleGolRonaldoMessi/messi.webp" alt="Messi" class="relative w-72 h-96 object-cover bottom-16" style="mask-image: linear-gradient(black 80%, transparent);"/>
+                    )}
+                    {scorers.includes(players[1]) && (
+                        <img src="/CumpleGolRonaldoMessi/ronaldo.webp" alt="Ronaldo" class="relative w-72 h-96 object-cover bottom-16 " style="mask-image: linear-gradient(black 90%, transparent);"/>
+                    )}
+                </div>
+            </div>
+        )}
+        {goals.length > 0 && goalsInfo ? (
+            <div id="resultData" class="mt-8 text-center">
+            <p class="text-center text-2xl mt-4 text-white" id="result">
+                {goalsInfo}
+            </p>
+            </div>
+        ) : (
+            <div id="resultData" class="mt-8 text-center">
+            <p class="text-center text-2xl mt-4 text-white" id="result">
+                Lo siento, ni Messi ni Ronaldo marcaron gol en tu cumpleaños 😢
+            </p>
+            </div>
+        )}
+
+    </div>
+</Layout>
+
+
+
