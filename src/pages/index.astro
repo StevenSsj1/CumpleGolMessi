@@ -74,10 +74,13 @@ if (Astro.request.method === 'POST') {
             </div>
         )}
         {goals.length > 0 && goalsInfo ? (
-            <div id="resultData" class="mt-8 text-center">
-            <p class="text-center text-2xl mt-4 text-white" id="result">
-                {goalsInfo}
+            <div x-data="{ expanded: false }" id="resultData" class="text-center">
+            <p class="text-center text-2xl text-white rounded-md whitespace-pre-line" id="result" x-show="expanded" x-collapse.min.150px >
+                🥳⚽ {goalsInfo} 🎊🎊
             </p>
+            <button @click="expanded = ! expanded" class="text-white mt-2 hover:underline" >
+                <span x-text="expanded ? 'Ver menos' : 'Ver más'"></span>
+            </button>
             </div>
         ) : (
             <div id="resultData" class="mt-8 text-center">
