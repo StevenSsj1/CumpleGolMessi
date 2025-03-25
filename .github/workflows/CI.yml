@@ -2,15 +2,12 @@ name: PR Build Check
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-permissions:
-  pull-requests: write
-  issues: write
+    types: [synchronize]
   
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - name: test
+    - run: echo 'A review from octo-team was requested'
