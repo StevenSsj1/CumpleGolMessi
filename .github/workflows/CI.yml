@@ -14,7 +14,3 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Set up Astro
-    - uses: withastro/action@v3
-
