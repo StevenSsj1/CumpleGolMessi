@@ -15,13 +15,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Node.js 
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+    - name: Set up Astro
+    - uses: withastro/action@v3
 
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build project
-      run: npm run build
