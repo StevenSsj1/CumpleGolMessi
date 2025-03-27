@@ -42,7 +42,7 @@ if (Astro.request.method === 'POST') {
 
         <form id="dateForm" @submit="loading = true" class="w-full max-w-md p-8 rounded-lg shadow-2xl" method="POST">
             <label for="dateBirthday" class="block text-lg font-medium text-gray-300 mb-4">
-                Selecciona tu fecha de nacimiento:
+                Selecciona tu fecha de nacimiento: (No importa el año, ya que solo se tomara en cuenta el mes y el día)
             </label>
             <div class="flex items-center gap-4">
                 <input 
