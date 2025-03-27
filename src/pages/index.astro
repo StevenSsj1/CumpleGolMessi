@@ -3,10 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import getDataGoogleSheet from '../lib/DataGoogleSheet';
 import FecthMagicLoops from '../lib/FecthMagicLoops';
 import { type Goal, type Goals } from '../types/DataGoals';
+import Balon from '../assets/balon.svg';
 
 const players = ['Messi', 'Ronaldo'];
 
-let goalsInfo = [];
+let goalsInfo = '';
 let goals = [];
 let scorers: string[] = [];
 
@@ -18,30 +19,30 @@ if (Astro.request.method === 'POST') {
     const [year, month, day] = birthday.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
     const formattedDate = date.toLocaleDateString('es-EC');
-
     try {
       goals = await getDataGoogleSheet(formattedDate);
       scorers = goals.map((goal: Goal) => goal.scorer);
-      if (goals.length >= 0) 
-      goalsInfo = await FecthMagicLoops(goals);      
+      if (goals.length > 0){
+        goalsInfo = await FecthMagicLoops(goals) 
+      } else {
+        goalsInfo = 'Lo siento, ni Messi ni Ronaldo marcaron gol en tu cumpleaños 😢';
+      }
     } catch (error) {
       console.error('Error al obtener los datos de goles:', error);
     }
-  }
+ }
 }
 ---
 
 <Layout>
-    <div class="min-h-screen bg-gradient-to-br flex flex-col items-center justify-center text-white p-6">
-        <!-- Título principal -->
+    <div x-data="{ loading: false }" class="relative min-h-screen bg-gradient-to-br flex flex-col items-center justify-center text-white p-6">
         <h1 class="text-4xl md:text-5xl font-bold text-center mb-8">
             ¿Messi o Cristiano hicieron gol en tu cumpleaños?
         </h1>
 
-        <!-- Formulario -->
-        <form id="dateForm" class="w-full max-w-md p-8 rounded-lg shadow-2xl" method="POST">
+        <form id="dateForm" @submit="loading = true" class="w-full max-w-md p-8 rounded-lg shadow-2xl" method="POST">
             <label for="dateBirthday" class="block text-lg font-medium text-gray-300 mb-4">
-                Selecciona tu fecha de nacimiento:(No importa el año, ya que solo se tomara en cuenta el mes y el día)
+                Selecciona tu fecha de nacimiento:
             </label>
             <div class="flex items-center gap-4">
                 <input 
@@ -52,23 +53,23 @@ if (Astro.request.method === 'POST') {
                     required
                 />
                 <button 
-                    id="checkButton" 
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105 active:scale-95"
+                    id="checkButton"
+                    :disabled="loading"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Verificar
                 </button>
             </div>
         </form>
-
-        <!-- Resultado -->
+        
         {scorers.length > 0 && (
             <div id="resultData" class="mt-8 text-center">
                 <div class="flex flex-wrap justify-center gap-4">
                     {scorers.includes(players[0]) && (
-                        <img src="/messi.webp" alt="Messi" class="relative w-72 h-96 object-cover bottom-16" style="mask-image: linear-gradient(black 80%, transparent);"/>
+                        <img src="/messi.webp" alt="Messi" class="relative w-72 h-96 object-cover bottom-14" style="mask-image: linear-gradient(black 80%, transparent);"/>
                     )}
                     {scorers.includes(players[1]) && (
-                        <img src="/ronaldo.webp" alt="Ronaldo" class="relative w-72 h-96 object-cover bottom-16 " style="mask-image: linear-gradient(black 90%, transparent);"/>
+                        <img src="/ronaldo.webp" alt="Ronaldo" class="relative w-72 h-96 object-cover bottom-14" style="mask-image: linear-gradient(black 90%, transparent);"/>
                     )}
                 </div>
             </div>
@@ -85,13 +86,24 @@ if (Astro.request.method === 'POST') {
         ) : (
             <div id="resultData" class="mt-8 text-center">
             <p class="text-center text-2xl mt-4 text-white" id="result">
-                Lo siento, ni Messi ni Ronaldo marcaron gol en tu cumpleaños 😢
+                {goalsInfo}
             </p>
             </div>
         )}
-
+            <div 
+                x-show="loading" 
+                x-transition.opacity.duration.300ms
+                x-cloak 
+                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-md z-50"
+                >
+                <div class="flex flex-col items-center">
+                    <div class="h-40 w-40 flex flex-col items-center justify-center bg-white rounded-full shadow-lg relative">
+                        <Balon class="h-24 w-24 animate-bounce animate-spin-slow text-black fill-current" />
+                        <p class="text-black font-semibold">Cargando...</p>
+                    </div>
+                    <div class="w-24 h-4 bg-black opacity-30 rounded-full blur-md mt-[-10px]"></div>
+                </div>
+            </div>
     </div>
+
 </Layout>
-
-
-

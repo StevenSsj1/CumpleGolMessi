@@ -17,7 +17,11 @@ export default defineConfig({
     plugins: [tailwindcss()],
     envPrefix: 'PUBLIC_'
   },
-
+  experimental: {
+    svg:{
+      mode: 'sprite'
+    }
+  },
   output: 'server',
   adapter: vercel(),
   integrations: [alpinejs()],
