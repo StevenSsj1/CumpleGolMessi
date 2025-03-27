@@ -2,6 +2,14 @@
   "name": "cumplegol",
   "type": "module",
   "version": "0.0.1",
+  "description": "Proyecto personal para celebración de cumpleaños",
+  "author": {
+    "name": "Steven"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StevenSsj1/CumpleGolMessiCR7"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
