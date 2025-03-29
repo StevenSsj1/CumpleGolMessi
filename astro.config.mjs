@@ -7,6 +7,10 @@ import vercel from '@astrojs/vercel';
 
 import alpinejs from '@astrojs/alpinejs';
 
+import react from '@astrojs/react';
+
+import preact from '@astrojs/preact';
+
 // https://astro.build/config
 export default defineConfig({
   image: {
@@ -24,5 +28,7 @@ export default defineConfig({
   },
   output: 'server',
   adapter: vercel(),
-  integrations: [alpinejs()],
+  integrations: [alpinejs(), react({
+    include: ['**/react/*'],
+  }), preact()],
 });
