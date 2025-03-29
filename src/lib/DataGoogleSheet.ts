@@ -17,7 +17,13 @@ export default async function getDataGoogleSheet(
     const birthdayDayMonth = getDateMonthDay(dateBirthday);
 
     const goalsOnBirthday = [...goalsMessi, ...goalsRonaldo].filter(({ fecha }) => {
-      return getDateMonthDay(fecha) === birthdayDayMonth;
+      const fechaParts = fecha.split("-");
+      const day = fechaParts[2];
+      const month = fechaParts[1];
+      const fechaFormatted = `${day}-${month}`;
+      console.log(birthdayDayMonth, fechaFormatted );
+      
+      return fechaFormatted  === birthdayDayMonth;
     });
 
     return goalsOnBirthday.length > 0 ? goalsOnBirthday : [];
@@ -52,5 +58,5 @@ async function fetchDataGoogleSheet(url: string): Promise<Goals> {
 
 function getDateMonthDay(date: string): string {
   const [day, month] = date.split("/");
-  return `${day}/${month}`;
+  return `${day}-${month}`;
 }
