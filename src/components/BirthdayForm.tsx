@@ -48,6 +48,7 @@ export default function BirthdayForm() {
     <div className="relative min-h-screen bg-gradient-to-br flex flex-col items-center justify-center text-white p-6">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-8">¿Messi o Cristiano hicieron gol en tu cumpleaños?</h1>
 
+      {/* Formulario */}
       <form onSubmit={handleSubmit} class="w-full max-w-md p-8 rounded-lg shadow-2xl">
         <label htmlFor="dateBirthday" class="block text-lg font-medium text-gray-300 mb-4">
           Selecciona tu fecha de nacimiento: (No importa el año, ya que solo se tomará en cuenta el mes y el día)
@@ -99,7 +100,7 @@ export default function BirthdayForm() {
         <div id="resultData" class="text-center">
           <p
             class={`text-center text-2xl text-white rounded-md whitespace-pre-line overflow-hidden transition-all duration-300 ${
-              expanded ? "max-h-[1000px]" : "max-h-[150px]"
+              expanded ? "max-h-full" : "max-h-[150px] md:max-h-[300px]"
             }`}
             id="result"
           >
